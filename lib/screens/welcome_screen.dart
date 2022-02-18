@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  static const String id = 'welcome';
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
@@ -25,9 +27,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Text(
                   'Flash Chat',
                   style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                  ),
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black54),
                 ),
               ],
             ),
@@ -43,6 +45,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: MaterialButton(
                   onPressed: () {
                     //Go to login screen.
+                    // Navigator.push(context, MaterialPageRoute(
+                    //
+                    // ))
                   },
                   minWidth: 200.0,
                   height: 42.0,
