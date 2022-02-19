@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "205690622330",
+    "project_id": "flash-chat-1685a",
+    "storage_bucket": "flash-chat-1685a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205690622330:android:12ecc36642c001394706c3",
+        "android_client_info": {
+          "package_name": "us.bojie.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "205690622330-40f8igitdmal6epmlornestmr7ti4ud8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7n5_ymC_vtcebaMv9TbgEY53BE0hCxRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "205690622330-40f8igitdmal6epmlornestmr7ti4ud8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "205690622330-oas0rerpv75kammo8sjtu4os7iv9tj88.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "us.bojie.flashChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
