@@ -19,17 +19,18 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 2),
     );
 
-    animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.decelerate,
-    );
+    animation = ColorTween(
+      begin: Colors.red,
+      end: Colors.blue,
+    ).animate(controller);
 
     controller.forward();
 
     controller.addListener(() {
+      setState(() {});
       print(controller.value);
     });
   }
@@ -43,7 +44,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: animation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
