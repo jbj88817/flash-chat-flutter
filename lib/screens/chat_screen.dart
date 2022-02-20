@@ -4,6 +4,7 @@ import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 
 final _firestore = FirebaseFirestore.instance;
+User? loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat';
@@ -12,10 +13,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  User? loggedInUser;
-  String messageText = '';
 
+  String messageText = '';
   @override
   void initState() {
     super.initState();
@@ -75,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextController,
                       onChanged: (value) {
                         messageText = value;
                       },
@@ -83,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   RawMaterialButton(
                     onPressed: () {
+                      messageTextController.clear();
                       _firestore.collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser?.email,
@@ -123,10 +126,13 @@ class MessagesStream extends StatelessWidget {
           final messageData = message.data() as Map<String, dynamic>;
           final messageText = messageData['text'];
           final messageSender = messageData['sender'];
+
+          final currentUser = loggedInUser?.email;
+
           final messageWidget = MessageBubble(
-            sender: messageSender,
-            text: messageText,
-          );
+              sender: messageSender,
+              text: messageText,
+              isMe: currentUser == messageSender);
           messageWidgets.add(messageWidget);
         }
         return Expanded(
@@ -142,18 +148,21 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  const MessageBubble({Key? key, required this.sender, required this.text})
+  const MessageBubble(
+      {Key? key, required this.sender, required this.text, required this.isMe})
       : super(key: key);
 
   final String sender;
   final String text;
+  final bool isMe;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Text(
             sender,
@@ -161,15 +170,15 @@ class MessageBubble extends StatelessWidget {
           ),
           Material(
             elevation: 5.0,
-            borderRadius: BorderRadius.circular(30.0),
-            color: Colors.lightBlueAccent,
+            borderRadius: isMe ? kMeRadius : kOtherRadius,
+            color: isMe ? Colors.lightBlueAccent : Colors.white,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 '$text',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: isMe ? Colors.white : Colors.black54,
                   fontSize: 15.0,
                 ),
               ),
