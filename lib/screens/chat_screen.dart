@@ -30,21 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  // void getMessages() async {
-  //   var snapshot = await _firestore.collection('messages').get();
-  //   for (var message in snapshot.docs) {
-  //     print(message.data());
-  //   }
-  // }
-
-  void messageStream() async {
-    await for (var snapshot in _firestore.collection('messages').snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,10 +39,8 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                // _auth.signOut();
-                // Navigator.pop(context);
-                // getMessages();
-                messageStream();
+                _auth.signOut();
+                Navigator.pop(context);
               }),
         ],
         title: Text('⚡️Chat'),
@@ -89,6 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       _firestore.collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser?.email,
+                        'timestamp': DateTime.now().millisecondsSinceEpoch
                       });
                     },
                     child: Text(
@@ -120,23 +104,30 @@ class MessagesStream extends StatelessWidget {
             ),
           );
         }
-        final messages = snapshot.data?.docs;
+        final messages = snapshot.data?.docs.reversed;
         List<MessageBubble> messageWidgets = [];
         for (var message in messages!) {
           final messageData = message.data() as Map<String, dynamic>;
           final messageText = messageData['text'];
           final messageSender = messageData['sender'];
+          final timestamp = messageData['timestamp'] as int;
 
           final currentUser = loggedInUser?.email;
 
           final messageWidget = MessageBubble(
-              sender: messageSender,
-              text: messageText,
-              isMe: currentUser == messageSender);
+            sender: messageSender,
+            text: messageText,
+            isMe: currentUser == messageSender,
+            timestamp: timestamp,
+          );
           messageWidgets.add(messageWidget);
         }
+
+        messageWidgets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
         return Expanded(
           child: ListView(
+            reverse: true,
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             children: messageWidgets,
           ),
@@ -149,12 +140,17 @@ class MessagesStream extends StatelessWidget {
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble(
-      {Key? key, required this.sender, required this.text, required this.isMe})
+      {Key? key,
+      required this.sender,
+      required this.text,
+      required this.isMe,
+      required this.timestamp})
       : super(key: key);
 
   final String sender;
   final String text;
   final bool isMe;
+  final int timestamp;
 
   @override
   Widget build(BuildContext context) {
